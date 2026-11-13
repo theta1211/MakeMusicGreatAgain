@@ -8,8 +8,11 @@
 | UI | Jetpack Compose、Material 3、`material3-window-size-class` |
 | アーキテクチャ | MVVM + 単方向データフロー(ViewModel + `StateFlow`)、Hilt(DI) |
 | 音声出力 | Oboe(Apache 2.0) |
-| MIDI | `android.media.midi`(Kotlin)、AMidi(NDK、API 29+) |
+| DSP 部品 | DaisySP の MIT 部分(シンセ、電子ドラム合成、弦の物理モデル)、Freeverb |
+| MIDI | `android.media.midi`(Kotlin)、AMidi(NDK、API 29+)、ktmidi(SMF 読み書き) |
 | SF2 再生 | TinySoundFont(MIT) |
+| 音声ファイル | dr_libs(読み込み)、MediaCodec / MediaMuxer(M4A 書き出し) |
+| 対応 OS | minSdk 24 / targetSdk 36(選定理由は [05](05_sdk_selection.md)・[07](07_device_compatibility.md)) |
 | 永続化 | Room(プロジェクト一覧)、kotlinx.serialization(プロジェクト本体 JSON) |
 | ビルド | Gradle(Kotlin DSL)、CMake、AAB + Play Asset Delivery |
 | テスト | JUnit / Compose UI Test(Kotlin)、GoogleTest(C++) |
@@ -98,6 +101,7 @@
 ### 3.5 ドラム(DrumSampler)
 - 16 パッド。各パッド: サンプル、音量、パン、ピッチ、減衰、チョークグループ(オープン / クローズハイハットの排他)。
 - GM ドラムマップ(36=キック、38=スネア、42=クローズ HH …)に準拠し、MIDI 鍵盤からも叩ける。
+- パッドの音源は 2 種類: **合成**(DaisySP のアナログ風キック / スネア / ハイハット。808・909 風キット用、素材不要)と **サンプル**(生ドラム用)。
 
 ### 3.6 ギター等(SF2Player)
 - TinySoundFont でプリセットを読み込み、ノート / ベロシティ / ピッチベンドを渡す。
@@ -161,6 +165,7 @@ interface AudioEngine {
  1〜8  : トラック選択
 ```
 
+- JIS / US 配列の違いに影響されないよう、文字ではなく**物理キー位置(`KeyEvent.scanCode`)**で判定する。
 - `Activity.dispatchKeyEvent` で受け取り、テキスト入力欄にフォーカスがある時は割り当てを無効化する。
 - キーリピート(`repeatCount > 0`)は無視。
 - ドラム画面では `1〜4 / Q〜R / A〜F / Z〜V` を 4×4 パッドに割り当て。

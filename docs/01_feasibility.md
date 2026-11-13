@@ -71,7 +71,7 @@
 
 ## 3. Bluetooth キーボード
 
-「Bluetooth キーボード」は次の 2 種類がありうるため、**両方に対応する**設計にする(どちらを優先するかは要確認: [要件の未決事項](02_requirements.md#7-未決事項確認したいこと))。
+「Bluetooth キーボード」は次の 2 種類があり、**両方に対応する**(決定済み)。
 
 ### 3.1 BLE-MIDI キーボード(楽器用の MIDI 鍵盤)
 - 例: KORG microKEY Air、Roland A-49(BT アダプター)、Yamaha MD-BT01 経由の鍵盤など。
